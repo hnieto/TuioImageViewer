@@ -12,6 +12,16 @@ handles an image's look, position, and velocity  will be created for each image.
 These descriptions will be displayed when the user double taps a selected picture (see image above). The `TuioHandler.pde` file encapsulates the sketch's multitouch capabilities such 
 as detecting fingers and gestures. Read on for an in depth description of valid gestures.
 
+## TUIO
+
+The TUIO protocol allows touch information from multitouch devices (iPhone, iPad, Android smartphones, etc.) to reach a client application over the network. The multitouch sensing hardware
+needs to run a TUIO server application that broadcasts the touch data, most commonly over port 3333. These multitouch events will then be captured by the client device listeninig on the
+same port and used to remote control the client applicaiton.
+
+TUIO Server Applications:
+* Iphone/Ipad: [TuioPad](https://itunes.apple.com/us/app/tuiopad/id412446962)
+* Android: [TuioDroid](https://play.google.com/store/apps/details?id=tuioDroid.impl)
+
 
 ## XML File Format
 
