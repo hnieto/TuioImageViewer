@@ -53,3 +53,9 @@ Each finger will be marked on the screen as a Red circle. A maximum of 3 fingers
 
 * [Processing](http://processing.org/) 
 * [Processing TUIO library](ttp://www.tuio.org/?processing)
+
+
+## To Do
+
+* 2 finger picture rotation around z-axis  
+* merge with [MPE](https://github.com/TACC/MostPixelsEverCE) code to run sketch on tiled displays  
