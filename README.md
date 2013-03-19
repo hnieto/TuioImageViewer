@@ -1,6 +1,6 @@
 # TUIO Image Viewer
 
-![TuioImageViewer](https://dl.dropbox.com/u/25652072/TuioImageViewer.png)
+![TuioImageViewer](https://dl.dropbox.com/u/25652072/TuioImageViewer.jpg)
 
 This [Processing](http://processing.org/) sketch uses the [Processing TUIO library](http://www.tuio.org/?processing) to control the interaction between images via multitouch gestures.
 
