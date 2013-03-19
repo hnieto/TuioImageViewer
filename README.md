@@ -15,7 +15,7 @@ as detecting fingers and gestures. Read on for an in depth description of valid 
 
 ## XML File Format
 
-**IMPORTANT**
+**IMPORTANT**  
 Follow the following XML format and append `<picture>` child elements for each picture in your directory.
 
 ```
@@ -28,16 +28,16 @@ Follow the following XML format and append `<picture>` child elements for each p
 
 ## Gestures
 
-**IMPORTANT**
+**IMPORTANT**  
 Each finger will be marked on the screen as a Red circle. A maximum of 3 fingers will be detected with all others being ignored.
 
-Select Picture: Hover over image using 1 finger for 0.5 seconds
-Move Picture: 1 finger drag
-Throw Picture: drag 1 finger quickly and release 
-Flip Picture: 1 finger double tap to display text info
-Zoom In: 2 finger reverse pinch 
-Zoom Out: 2 finger pinch 
-Unselect Picture: 3 finger touch
+Select Picture: Hover over image using 1 finger for 0.5 seconds  
+Move Picture: 1 finger drag  
+Throw Picture: drag 1 finger quickly and release  
+Flip Picture: 1 finger double tap to display text info  
+Zoom In: 2 finger reverse pinch  
+Zoom Out: 2 finger pinch   
+Unselect Picture: 3 finger touch  
 
 
 ## Requirements
