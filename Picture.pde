@@ -82,6 +82,7 @@ class Picture {
           timerStarted = true;
           hoverStartTime = millis();
         }
+        
         if(millis()-hoverStartTime > 1000) {
           picked = true;
           borderColor = color(255,0,0); 
@@ -93,7 +94,7 @@ class Picture {
           velocity.x = tuioCursor1.getXSpeed();
           velocity.y = tuioCursor1.getYSpeed();
         }
-      } 
+      } else timerStarted = false; // restart timer if user stops hovering over image before 1 second limit is reached
     }
     
     // no need to check for hovering if pictures has already been selected
@@ -226,7 +227,8 @@ class Picture {
     borderColor = color(255); // revert to white border
   }
   
-  public void setUnavailable() {
+  // true if any other image has already been selected
+  public void setUnavailable() { 
     unavailable = true; 
   }
   
