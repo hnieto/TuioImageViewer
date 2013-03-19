@@ -14,8 +14,8 @@ float prevZoomFactor, zoomFactor;
 float prevTapTimeStamp;
 float tapTimeStamp = 0;
 
-int xOffset;
-int yOffset;
+// distance between finger and selected picture's center
+int dx, dy;
 
 void initTUIO() {
   // we create an instance of the TuioProcessing client
@@ -80,8 +80,14 @@ void addTuioCursor(TuioCursor tcur) {
     tuioCursor1 = tcur;
     for(int i=0; i<pictures.length; i++) {
       if(pictures[i].isPicked()) {
+        dx = (int) (tuioCursor1.getScreenX(width) - pictures[i].getX());
+        dy = (int) (tuioCursor1.getScreenY(height) - pictures[i].getY());
         if(doubleTapped(tuioCursor1)) pictures[i].flip();
-      } 
+      } else {
+        // reset dx,dy if no image has been selected yet
+        dx = 0;
+        dy = 0; 
+      }
     }
   } 
   else if (tuioCursor2 == null) {
@@ -122,7 +128,7 @@ void updateTuioCursor (TuioCursor tcur) {
     for (int i=0; i<pictures.length; i++) {
       if(pictures[i].isPicked()) {
         zoomFactor = pictures[i].getScalePercent();
-        pictures[i].setXY(tuioCursor1.getScreenX(width)-xOffset, tuioCursor1.getScreenY(height)-yOffset);
+        pictures[i].setXY(tuioCursor1.getScreenX(width)-dx, tuioCursor1.getScreenY(height)-dy);
         
         // prevent multiple pictures from being selected
         for (int j=0; j<pictures.length; j++) {
@@ -157,6 +163,14 @@ void removeTuioCursor(TuioCursor tcur) {
     if (tuioCursor2 != null) {
       tuioCursor1 = tuioCursor2;
       tuioCursor2 = null; 
+      
+      // update dx,dy due to cursor exchange
+      for(int i=0; i<pictures.length; i++) {
+        if(pictures[i].isPicked()) {
+          dx = (int) (tuioCursor1.getScreenX(width) - pictures[i].getX());
+          dy = (int) (tuioCursor1.getScreenY(height) - pictures[i].getY());
+        } 
+      }
     }    
     // If 3rd cursor still exists, make it the 2nd cursor
     if (tuioCursor3 != null) {

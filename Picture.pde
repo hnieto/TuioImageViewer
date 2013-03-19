@@ -85,12 +85,7 @@ class Picture {
         
         if(millis()-hoverStartTime > 1000) {
           picked = true;
-          borderColor = color(255,0,0); 
-          
-          // get cursor position relative to picture's center
-          xOffset = (int) (tuioCursor1.getScreenX(width)-location.x);
-          yOffset = (int) (tuioCursor1.getScreenY(height)-location.y);
-          
+          borderColor = color(255,0,0);                     
           velocity.x = tuioCursor1.getXSpeed();
           velocity.y = tuioCursor1.getYSpeed();
         }
@@ -99,11 +94,6 @@ class Picture {
     
     // no need to check for hovering if pictures has already been selected
     else if (tuioCursor1 != null && picked && !unavailable){
-      // get cursor position relative to picture's center
-      xOffset = (int) (tuioCursor1.getScreenX(width)-location.x);
-      yOffset = (int) (tuioCursor1.getScreenY(height)-location.y); 
-   
-      // update velocity
       velocity.x = tuioCursor1.getXSpeed();
       velocity.y = tuioCursor1.getYSpeed();  
     }
