@@ -17,6 +17,8 @@ class Picture {
   private PVector location;  
   private PVector velocity;
   private PVector friction;
+  private int xOffset;
+  private int yOffset;
   
   /* Y-Axis Rotation */
   private float theta;
@@ -85,7 +87,12 @@ class Picture {
         
         if(millis()-hoverStartTime > 1000) {
           picked = true;
-          borderColor = color(255,0,0);                     
+          borderColor = color(255,0,0);       
+          
+          // required to move picture smoothly regardless over where user touches the screen
+          xOffset = (int) (tuioCursor1.getScreenX(width) - location.x);
+          yOffset = (int) (tuioCursor1.getScreenY(height) - location.y); 
+          
           velocity.x = tuioCursor1.getXSpeed();
           velocity.y = tuioCursor1.getYSpeed();
         }
@@ -94,6 +101,11 @@ class Picture {
     
     // no need to check for hovering if pictures has already been selected
     else if (tuioCursor1 != null && picked && !unavailable){
+      
+      // must keep updated as picture is translated and zoomed
+      xOffset = (int) (tuioCursor1.getScreenX(width) - location.x);
+      yOffset = (int) (tuioCursor1.getScreenY(height) - location.y);  
+      
       velocity.x = tuioCursor1.getXSpeed();
       velocity.y = tuioCursor1.getYSpeed();  
     }
@@ -196,6 +208,14 @@ class Picture {
     location.y = _ypos; 
   }
   
+  public void setxOffset(int _xOffset){
+    xOffset = _xOffset; 
+  }
+
+  public void setyOffset(int _yOffset){
+    yOffset = _yOffset; 
+  }
+  
   public void setVelX(float xspeed) {
     velocity.x = xspeed;
   }
@@ -239,6 +259,14 @@ class Picture {
   
   public int getY() {
     return (int) location.y; 
+  }
+  
+  public int getxOffset() {
+    return xOffset; 
+  }
+  
+  public int getyOffset() {
+    return yOffset; 
   }
   
   public int getWidth() {

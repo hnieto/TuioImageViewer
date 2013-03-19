@@ -80,14 +80,12 @@ void addTuioCursor(TuioCursor tcur) {
     tuioCursor1 = tcur;
     for(int i=0; i<pictures.length; i++) {
       if(pictures[i].isPicked()) {
-        dx = (int) (tuioCursor1.getScreenX(width) - pictures[i].getX());
-        dy = (int) (tuioCursor1.getScreenY(height) - pictures[i].getY());
+        // update offsets cursor #1 is added
+        pictures[i].setxOffset((int) (tuioCursor1.getScreenX(width) - pictures[i].getX()));
+        pictures[i].setyOffset((int) (tuioCursor1.getScreenY(height) - pictures[i].getY()));
+        
         if(doubleTapped(tuioCursor1)) pictures[i].flip();
-      } else {
-        // reset dx,dy if no image has been selected yet
-        dx = 0;
-        dy = 0; 
-      }
+      } 
     }
   } 
   else if (tuioCursor2 == null) {
@@ -128,7 +126,7 @@ void updateTuioCursor (TuioCursor tcur) {
     for (int i=0; i<pictures.length; i++) {
       if(pictures[i].isPicked()) {
         zoomFactor = pictures[i].getScalePercent();
-        pictures[i].setXY(tuioCursor1.getScreenX(width)-dx, tuioCursor1.getScreenY(height)-dy);
+        pictures[i].setXY(tuioCursor1.getScreenX(width)-pictures[i].getxOffset(), tuioCursor1.getScreenY(height)-pictures[i].getyOffset());
         
         // prevent multiple pictures from being selected
         for (int j=0; j<pictures.length; j++) {
@@ -164,11 +162,11 @@ void removeTuioCursor(TuioCursor tcur) {
       tuioCursor1 = tuioCursor2;
       tuioCursor2 = null; 
       
-      // update dx,dy due to cursor exchange
+      // update offsets due to cursor exchange
       for(int i=0; i<pictures.length; i++) {
         if(pictures[i].isPicked()) {
-          dx = (int) (tuioCursor1.getScreenX(width) - pictures[i].getX());
-          dy = (int) (tuioCursor1.getScreenY(height) - pictures[i].getY());
+          pictures[i].setxOffset((int) (tuioCursor1.getScreenX(width) - pictures[i].getX()));
+          pictures[i].setyOffset((int) (tuioCursor1.getScreenY(height) - pictures[i].getY()));
         } 
       }
     }    
