@@ -9,7 +9,7 @@ This [Processing](http://processing.org/) sketch uses the [Processing TUIO libra
 The main sketch file, `TuioImageViewer.pde`, will load images from the `/data/Images` directory. The `FileFilter` class will ensure that only files with image extensions specified within the class are loaded. A `Picture` Object that handles an image's look, position, and velocity  will be created for each image. Each image's description will be read from the XML file `picture_descriptions.xml` stored in the `/data` directory. These descriptions will be displayed when the user double taps a selected picture (see image above). The `TuioHandler.pde` file encapsulates the sketch's multitouch capabilities such as detecting fingers and gestures. Read on for an in depth description of valid gestures. 
 
 **IMPORTANT**
-Make sure to edit the `dataPath` variable to point to your local `/data` directory. The program will not work as intended if it cannot located the necessary files.
+Make sure to edit the `dataPath` variable to point to your local `/data` directory. The program will not work as intended if it cannot locate the necessary files.
 
 ## TUIO
 
