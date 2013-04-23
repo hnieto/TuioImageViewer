@@ -1,7 +1,9 @@
 class Picture {
   private PImage img;
+  private String imgPath;
   private String imgName;
   private String imgDescription;
+  private int id;
 
   /* Size */
   private float scalePercent;
@@ -17,8 +19,8 @@ class Picture {
   private PVector location;  
   private PVector velocity;
   private PVector friction;
-  private int xOffset;
-  private int yOffset;
+  private float xOffset;
+  private float yOffset;
   
   /* Y-Axis Rotation */
   private float theta;
@@ -36,14 +38,16 @@ class Picture {
   private boolean picked;
   private boolean unavailable; // used to prevent multiple pictures from being selected
 
-  Picture(String _imgName) {
+  Picture(String _imgPath, String _imgName, int _id) {
+    imgPath = _imgPath;
     imgName = _imgName;
-    expectedPictureWidth = width/8;
+    id = _id;
+    expectedPictureWidth = sketchWidth/8;
     borderThickness = 5;
     borderColor = color(255); // white border
     theta = 0.0;
     
-    currentScreenRes = width * height;
+    currentScreenRes = sketchWidth * sketchHeight;
     fontSize = (int) map(currentScreenRes,MACBOOK_SCREEN_RES,STALLION_SCREEN_RES,14,128); // scale font size according to screen resolution   
     
     timerStarted = false;
@@ -54,11 +58,11 @@ class Picture {
   }
 
   public void load() {
-    img = loadImage(imgName);
+    img = loadImage(imgPath + imgName);
     scalePercent = expectedPictureWidth/img.width;
     scaledWidth = img.width * scalePercent;
     scaledHeight = img.height * scalePercent;
-    location = new PVector((int) random(width-scaledWidth), (int) random(height-scaledHeight));
+    location = new PVector(random(sketchWidth-scaledWidth), random(sketchHeight-scaledHeight));
     velocity = new PVector(0,0);
   }
   
@@ -72,13 +76,13 @@ class Picture {
     friction.mult(frictionMag);
     // end friction     
 
-    location.add(velocity);
+    location.add(velocity); 
     velocity.sub(friction);
     constrainToSketchWindow();
     
     if (tuioCursor1 != null && !picked && !unavailable){
       // highlight with red border when hovering over pic for > 1s
-      if(tuioCursor1.getScreenX(width) > location.x-scaledWidth/2 && tuioCursor1.getScreenX(width) < location.x+scaledWidth/2 && tuioCursor1.getScreenY(height) > location.y-scaledHeight/2 && tuioCursor1.getScreenY(height) < location.y+scaledHeight/2) {
+      if(tuioCursor1.getScreenX(sketchWidth) > location.x-scaledWidth/2 && tuioCursor1.getScreenX(sketchWidth) < location.x+scaledWidth/2 && tuioCursor1.getScreenY(sketchHeight) > location.y-scaledHeight/2 && tuioCursor1.getScreenY(sketchHeight) < location.y+scaledHeight/2) {
         // start timer once mouse is over picture
         if(!timerStarted) {
           timerStarted = true;
@@ -86,12 +90,14 @@ class Picture {
         }
         
         if(millis()-hoverStartTime > 1000) {
+          location.z = 1;
           picked = true;
-          borderColor = color(255,0,0);       
+          borderColor = color(255,0,0);     
+          showCursor = false;  
           
           // required to move picture smoothly regardless over where user touches the screen
-          xOffset = (int) (tuioCursor1.getScreenX(width) - location.x);
-          yOffset = (int) (tuioCursor1.getScreenY(height) - location.y); 
+          xOffset = (int) (tuioCursor1.getScreenX(sketchWidth) - location.x);
+          yOffset = (int) (tuioCursor1.getScreenY(sketchHeight) - location.y); 
           
           velocity.x = tuioCursor1.getXSpeed();
           velocity.y = tuioCursor1.getYSpeed();
@@ -102,13 +108,15 @@ class Picture {
     // no need to check for hovering if pictures has already been selected
     else if (tuioCursor1 != null && picked && !unavailable){
       
-      // must keep updated as picture is translated and zoomed
-      xOffset = (int) (tuioCursor1.getScreenX(width) - location.x);
-      yOffset = (int) (tuioCursor1.getScreenY(height) - location.y);  
+      // must keep updated as image is moved
+      xOffset = (tuioCursor1.getScreenX(sketchWidth) - location.x);
+      yOffset = (tuioCursor1.getScreenY(sketchHeight) - location.y);  
       
       velocity.x = tuioCursor1.getXSpeed();
       velocity.y = tuioCursor1.getYSpeed();  
-    }
+    }   
+    
+    if(MPE_ON) process.broadcast(getState()); 
   }
   
   public void display() {  
@@ -118,7 +126,7 @@ class Picture {
     
     pushMatrix();
       if(showText) {
-        translate(location.x, location.y); 
+        translate(location.x, location.y, location.z); 
         
         // flip animation will require 50 frames
         if(theta < PI) { 
@@ -137,13 +145,14 @@ class Picture {
             rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
             fill(255); // white text
             textSize(fontSize);
-            text(imgDescription, 0, 0, scaledWidth-10, scaledHeight-10);
+            if(imgDescription != null) text(imgDescription, 0, 0, scaledWidth-10, scaledHeight-10);
+            else println("Image Description String is Null");
           popStyle();
         }
       } 
       
       if(showPicture) {
-        translate(location.x, location.y); 
+        translate(location.x, location.y, location.z); 
         
         // flip animation will require 50 frames
         if(theta > 0) {
@@ -169,19 +178,19 @@ class Picture {
   }
   
   private void constrainToSketchWindow() {
-    if (location.x+scaledWidth/2 > width) {
+    if (location.x+scaledWidth/2 > sketchWidth) {
       velocity.x = velocity.x * -0.6; //wall friction
-      location.x = width-scaledWidth/2; 
+      location.x = sketchWidth-scaledWidth/2; 
     }
     else if (location.x-scaledWidth/2 < 0) {
       velocity.x = velocity.x * -0.6; 
       location.x = scaledWidth/2;
     }
 
-    if (location.y+scaledHeight/2 > height) {
+    if (location.y+scaledHeight/2 > sketchHeight) {
       velocity.y = velocity.y * -0.6;
       velocity.x = velocity.x * 0.6; 
-      location.y = height - scaledHeight/2; 
+      location.y = sketchHeight - scaledHeight/2; 
     }
     else if (location.y-scaledHeight/2 < 0) {
       velocity.y = velocity.y * -0.6; 
@@ -189,13 +198,15 @@ class Picture {
     } 
   }
   
+  /***************/
   /* SET METHODS */
+  /***************/
   
   public void setDescription(String str) {
     imgDescription = str; 
   }
 
-  public void setXY(int _xpos, int _ypos) {
+  public void setXY(float _xpos, float _ypos) {
     location.x = _xpos; 
     location.y = _ypos;
   }
@@ -208,11 +219,11 @@ class Picture {
     location.y = _ypos; 
   }
   
-  public void setxOffset(int _xOffset){
+  public void setxOffset(float _xOffset){
     xOffset = _xOffset; 
   }
 
-  public void setyOffset(int _yOffset){
+  public void setyOffset(float _yOffset){
     yOffset = _yOffset; 
   }
   
@@ -231,7 +242,9 @@ class Picture {
   }
    
   public void unPick() {
+    location.z = 0;
     picked = false;
+    showCursor = true;
     unavailable = false;
     timerStarted = false;
     borderColor = color(255); // revert to white border
@@ -246,8 +259,24 @@ class Picture {
     showText = !showText; 
     showPicture = !showPicture;
   }
+  
+  public void setState(final PictureState state) {
+    location.x = state.x;
+    location.y = state.y;
+    location.z = state.z;
+    scalePercent = state.scalePercent;
+    scaledWidth = state.w * state.scalePercent;
+    scaledHeight = state.h * state.scalePercent;
+    theta = state.theta;
+    imgDescription = state.imgDescription;
+    showPicture = state.showPicture;
+    showText = state.showText;
+    borderColor = unhex(state.borderColor);    
+  } 
     
+  /***************/  
   /* GET METHODS */
+  /***************/
   
   public String getDescription() {
     return imgDescription; 
@@ -261,20 +290,20 @@ class Picture {
     return (int) location.y; 
   }
   
-  public int getxOffset() {
+  public float getxOffset() {
     return xOffset; 
   }
   
-  public int getyOffset() {
+  public float getyOffset() {
     return yOffset; 
   }
   
-  public int getWidth() {
-    return (int) scaledWidth; 
+  public float getWidth() {
+    return scaledWidth; 
   }
   
-  public int getHeight() {
-    return (int) scaledHeight;
+  public float getHeight() {
+    return scaledHeight;
   }
   
   public String getName(){
@@ -284,8 +313,12 @@ class Picture {
   public float getScalePercent() {
     return scalePercent; 
   }
-  
+
   public boolean isPicked() {
     return picked; 
+  }
+  
+  private PictureState getState() {
+    return new PictureState(id, location.x, location.y, location.z, img.width, img.height, scalePercent, theta, imgDescription, showPicture, showText, hex(borderColor)); 
   }
 }

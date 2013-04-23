@@ -1,5 +1,4 @@
-// we need to import the TUIO library
-// and declare a TuioProcessing client variable
+// we need to import the TUIO library and declare a TuioProcessing client variable
 import TUIO.*;
 TuioProcessing tuioClient;
 int port = 3333;
@@ -7,7 +6,7 @@ TuioCursor tuioCursor1 = null;
 TuioCursor tuioCursor2 = null;
 TuioCursor tuioCursor3 = null;
 
-float desiredImageWidth = width/8;
+float desiredImageWidth = sketchWidth/8;
 float startDistance, currDistance;
 float prevZoomFactor, zoomFactor;
 
@@ -21,42 +20,20 @@ void initTUIO() {
   // we create an instance of the TuioProcessing client
   // since we add "this" class as an argument the TuioProcessing class expects
   // an implementation of the TUIO callback methods (see below)
-  tuioClient  = new TuioProcessing(this, port);
-  println("\n" + "TUIO client listening on port " + port + " .....");
-}
-
-void showCursors(){
-  if(tuioCursor1 != null){
-    pushStyle();
-    stroke(255);
-    strokeWeight(3);
-    fill(255,0,0);
-    ellipse(tuioCursor1.getScreenX(width), tuioCursor1.getScreenY(height), width/64, width/64);
-    popStyle();
-  }
-
-  if(tuioCursor2 != null){
-    pushStyle();
-    stroke(255);
-    strokeWeight(3);
-    fill(255,0,0);
-    ellipse(tuioCursor2.getScreenX(width), tuioCursor2.getScreenY(height), width/64, width/64);
-    popStyle();
-  }
-  
-  if(tuioCursor3 != null){
-    pushStyle();
-    stroke(255);
-    strokeWeight(3);
-    fill(255,0,0);
-    ellipse(tuioCursor3.getScreenX(width), tuioCursor3.getScreenY(height), width/64, width/64);
-    popStyle();
+  if(MPE_ON){
+    if(tileConfig.isLeader()) tuioClient  = new TuioProcessing(this, 3333);
+    else tuioClient  = new TuioProcessing(this, 3334);
+    println("\n" + "Leader process listening for TUIO on port 3333 .....");
+    println("\n" + "Client processes listening for TUIO on port 3334 .....");
+  } else {
+    tuioClient  = new TuioProcessing(this, port);
+    println("\n" + "TUIO client listening on port " + port + " .....");
   }
 }
 
 float getDistance(TuioCursor tuioCursor1, TuioCursor tuioCursor2) {
-  return dist(tuioCursor1.getScreenX(width), tuioCursor1.getScreenY(height), 
-              tuioCursor2.getScreenX(width), tuioCursor2.getScreenY(height));
+  return dist(tuioCursor1.getScreenX(sketchWidth), tuioCursor1.getScreenY(sketchHeight), 
+              tuioCursor2.getScreenX(sketchWidth), tuioCursor2.getScreenY(sketchHeight));
 }
 
 boolean doubleTapped(TuioCursor finger) {
@@ -77,12 +54,12 @@ boolean doubleTapped(TuioCursor finger) {
 // called when a cursor is added to the scene
 void addTuioCursor(TuioCursor tcur) { 
   if (tuioCursor1 == null) {
-    tuioCursor1 = tcur;
+    tuioCursor1 = tcur;    
     for(int i=0; i<pictures.length; i++) {
       if(pictures[i].isPicked()) {
         // update offsets cursor #1 is added
-        pictures[i].setxOffset((int) (tuioCursor1.getScreenX(width) - pictures[i].getX()));
-        pictures[i].setyOffset((int) (tuioCursor1.getScreenY(height) - pictures[i].getY()));
+        pictures[i].setxOffset(tuioCursor1.getScreenX(sketchWidth) - pictures[i].getX());
+        pictures[i].setyOffset(tuioCursor1.getScreenY(sketchHeight) - pictures[i].getY());
         
         if(doubleTapped(tuioCursor1)) pictures[i].flip();
       } 
@@ -121,12 +98,12 @@ void updateTuioCursor (TuioCursor tcur) {
     }
   } 
   
-  else if (tuioCursor1 != null) {
+  else if (tuioCursor1 != null) {        
     // move selected picture to current cursor position
     for (int i=0; i<pictures.length; i++) {
       if(pictures[i].isPicked()) {
         zoomFactor = pictures[i].getScalePercent();
-        pictures[i].setXY(tuioCursor1.getScreenX(width)-pictures[i].getxOffset(), tuioCursor1.getScreenY(height)-pictures[i].getyOffset());
+        pictures[i].setXY(tuioCursor1.getScreenX(sketchWidth)-pictures[i].getxOffset(), tuioCursor1.getScreenY(sketchHeight)-pictures[i].getyOffset());
         
         // prevent multiple pictures from being selected
         for (int j=0; j<pictures.length; j++) {
@@ -165,8 +142,8 @@ void removeTuioCursor(TuioCursor tcur) {
       // update offsets due to cursor exchange
       for(int i=0; i<pictures.length; i++) {
         if(pictures[i].isPicked()) {
-          pictures[i].setxOffset((int) (tuioCursor1.getScreenX(width) - pictures[i].getX()));
-          pictures[i].setyOffset((int) (tuioCursor1.getScreenY(height) - pictures[i].getY()));
+          pictures[i].setxOffset(tuioCursor1.getScreenX(sketchWidth) - pictures[i].getX());
+          pictures[i].setyOffset(tuioCursor1.getScreenY(sketchHeight) - pictures[i].getY());
         } 
       }
     }    
