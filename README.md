@@ -6,17 +6,14 @@ This [Processing](http://processing.org/) sketch uses the [Processing TUIO libra
 
 ## Description
 
-The main sketch file, `TuioImageViewer.pde`, will load images from the directory specified by the `imgPath` variable. Leaving this variable blank will tell the program to search for 
-images in the sketch's `/data` directory. The `FileFilter` class will ensure that only files with image extensions specified within the class are loaded. A `Picture` Object that 
-handles an image's look, position, and velocity  will be created for each image. Each image's description will be read from the XML file `picture_descriptions.xml` stored in the `/data` directory. 
-These descriptions will be displayed when the user double taps a selected picture (see image above). The `TuioHandler.pde` file encapsulates the sketch's multitouch capabilities such 
-as detecting fingers and gestures. Read on for an in depth description of valid gestures.
+The main sketch file, `TuioImageViewer.pde`, will load images from the `/data/Images` directory. The `FileFilter` class will ensure that only files with image extensions specified within the class are loaded. A `Picture` Object that handles an image's look, position, and velocity  will be created for each image. Each image's description will be read from the XML file `picture_descriptions.xml` stored in the `/data` directory. These descriptions will be displayed when the user double taps a selected picture (see image above). The `TuioHandler.pde` file encapsulates the sketch's multitouch capabilities such as detecting fingers and gestures. Read on for an in depth description of valid gestures. 
+
+**IMPORTANT**
+Make sure to edit the `dataPath` variable to point to your local `/data` directory. The program will not work as intended if it cannot located the necessary files.
 
 ## TUIO
 
-The TUIO protocol allows touch information from multitouch devices (iPhone, iPad, Android smartphones, etc.) to reach a client application over the network. The multitouch sensing hardware
-needs to run a TUIO server application that broadcasts the touch data, most commonly over port 3333. These multitouch events will then be captured by the client device listeninig on the
-same port and used to remote control the client applicaiton.
+The TUIO protocol allows touch information from multitouch devices (iPhone, iPad, Android smartphones, etc.) to reach a client application over the network. The multitouch sensing hardware needs to run a TUIO server application that broadcasts the touch data, most commonly over port 3333. These multitouch events will then be captured by the client device listeninig on the same port and used to remote control the client applicaiton.
 
 TUIO Server Applications:
 * Iphone/Ipad: [TuioPad](https://itunes.apple.com/us/app/tuiopad/id412446962)
@@ -38,7 +35,7 @@ Follow the following XML format and append `<picture>` child elements for each p
 
 ## Gestures
 
-Each finger will be marked on the screen as a Red circle. A maximum of 3 fingers will be detected with all others being ignored.
+A maximum of 3 fingers will be detected by the program. Only the first finger will be marked by a red circle. The second and third fingers will be detected but just not displayed.
 
 **Select Picture:** Hover over image using 1 finger for 1 second   
 **Move Picture:** 1 finger drag  
@@ -49,13 +46,17 @@ Each finger will be marked on the screen as a Red circle. A maximum of 3 fingers
 **Unselect Picture:** 3 finger touch  
 
 
+## Massive Pixel Environment
+
+[MPE](https://github.com/TACC/MassivePixelEnvironment) is a library that allows Processing sketches to be displayed on tiled displays. To enable this feature, set the `MPE_ON` flag,located at the beginning of the `TuioImageViewer.pde` file, to `true`. The `configuration.xml` file in the `/data/MPE` directory will display your sketch on 4 200x200 pixel windows on your local machine. This file must be edited as specified in the [MPE documentation](https://github.com/TACC/MassivePixelEnvironment/wiki/MassivePixelEnvironment-HowTo) if you want to display your sketch on an actual distributed system.
+
 ## Requirements
 
 * [Processing](http://processing.org/) 
-* [Processing TUIO library](ttp://www.tuio.org/?processing)
+* [Processing TUIO library](http://www.tuio.org/?processing)
+* [MassivePixelEnvironment](https://github.com/TACC/MassivePixelEnvironment)
 
 
 ## To Do
 
 * 2 finger picture rotation around z-axis  
-* merge with [MPE](https://github.com/TACC/MostPixelsEverCE) code to run sketch on tiled displays  
