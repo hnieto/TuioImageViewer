@@ -48,7 +48,7 @@ A maximum of 3 fingers will be detected by the program. Only the first finger wi
 
 ## Massive Pixel Environment
 
-[MPE](https://github.com/TACC/MassivePixelEnvironment) is a library that allows Processing sketches to be displayed on tiled displays. To enable this feature, set the `MPE_ON` flag,located at the beginning of the `TuioImageViewer.pde` file, to `true`. The `configuration.xml` file in the `/data/MPE` directory will display your sketch on 4 350x350 pixel windows on your local machine. This file must be edited as specified in the [MPE documentation](https://github.com/TACC/MassivePixelEnvironment/wiki/MassivePixelEnvironment-HowTo) if you want to display your sketch on an actual distributed system.
+[MPE](https://github.com/TACC/MassivePixelEnvironment) is a library that allows Processing sketches to be displayed on tiled displays. To enable this feature, set the `MPE_ON` flag,located at the beginning of the `TuioImageViewer.pde` file, to `true`. The `configuration.xml` file in the `/data/MPE` directory will display your sketch on 4 350x350 pixel windows on your local machine. This file must be edited as specified in the [MPE documentation](https://github.com/TACC/MassivePixelEnvironment/wiki/MassivePixelEnvironment-HowTo) if you want to display your sketch on an actual distributed system like [Stallion](http://www.tacc.utexas.edu/resources/visualization).
 
 ## Requirements
 
