@@ -88,7 +88,7 @@ void updateTuioCursor (TuioCursor tcur) {
         // zoom
         currDistance = getDistance(tuioCursor1, tuioCursor2);
         zoomFactor = prevZoomFactor*(currDistance/startDistance);
-        pictures[i].setScalePercent(zoomFactor); // get picture's scale value in case user zooms
+        pictures[i].setZoom(zoomFactor); // get picture's scale value in case user zooms
         
         // prevent multiple pictures from being selected
         for (int j=0; j<pictures.length; j++) {
@@ -102,7 +102,7 @@ void updateTuioCursor (TuioCursor tcur) {
     // move selected picture to current cursor position
     for (int i=0; i<pictures.length; i++) {
       if(pictures[i].isPicked()) {
-        zoomFactor = pictures[i].getScalePercent();
+        zoomFactor = pictures[i].getZoom();
         pictures[i].setXY(tuioCursor1.getScreenX(sketchWidth)-pictures[i].getxOffset(), tuioCursor1.getScreenY(sketchHeight)-pictures[i].getyOffset());
         
         // prevent multiple pictures from being selected

@@ -31,16 +31,19 @@ class Cursor {
   }
   
   public void setState(final CursorState state) {
-    x = state.x;
-    y = state.y;
-    w = state.w;
-    h = state.h;
+    // total tiled display width / head node sketch window width  
+    float scaler = (float) process.getMWidth()/state.leaderWidth;
+    
+    x = state.x * scaler;
+    y = state.y * scaler;
+    w = state.w * scaler;
+    h = state.h * scaler;
     c = unhex(state.cursorColor);
     
     display();
   } 
   
   private CursorState getState() {
-    return new CursorState(x, y, w, h, hex(c)); 
+    return new CursorState(x, y, w, h, hex(c), (float) process.getMWidth()); 
   }
 }

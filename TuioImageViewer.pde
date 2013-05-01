@@ -38,13 +38,13 @@ void setup() {
   
     // set the size of the sketch based on the configuration file
     size(tileConfig.getLWidth(), tileConfig.getLHeight(), OPENGL);
-    
+        
     // create a new process
     process = new Process(tileConfig);
     
     sketchWidth  = process.getMWidth();
     sketchHeight = process.getMHeight(); 
-    
+                
     randomSeed(0);
   } else {
     if(FULLSCREEN) size(displayWidth,displayHeight,OPENGL); // run from "Sketch -> Present"
@@ -77,15 +77,12 @@ void draw() {
       if(obj instanceof PictureState) {
         // cast object to a PictureState
         PictureState picState = (PictureState) obj;
-        //println("Picture #" + picState.id + " selected");
-        //println("Image Description = " + picState.imgDescription);
         pictures[picState.id].setState(picState);
       } 
       
       else if(obj instanceof CursorState) { 
         // cast object to a CursorState
         CursorState curState = (CursorState) obj; 
-        //println(); println("Cursor Position = " + curState.x + ", " + curState.y);
         finger.setState(curState);
       }      
     } 

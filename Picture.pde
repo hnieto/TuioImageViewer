@@ -6,7 +6,7 @@ class Picture {
   private int id;
 
   /* Size */
-  private float scalePercent;
+  private float zoom;
   private float expectedPictureWidth;
   private float scaledWidth;
   private float scaledHeight;
@@ -59,9 +59,9 @@ class Picture {
 
   public void load() {
     img = loadImage(imgPath + imgName);
-    scalePercent = expectedPictureWidth/img.width;
-    scaledWidth = img.width * scalePercent;
-    scaledHeight = img.height * scalePercent;
+    zoom = expectedPictureWidth/img.width;
+    scaledWidth = img.width * zoom;
+    scaledHeight = img.height * zoom;
     location = new PVector(random(sketchWidth-scaledWidth), random(sketchHeight-scaledHeight));
     velocity = new PVector(0,0);
   }
@@ -132,7 +132,7 @@ class Picture {
         if(theta < PI) { 
           rotateY(theta);
           theta += PI/50;
-          scale(scalePercent);
+          scale(zoom);
           image(img, 0, 0);
         } 
         
@@ -170,7 +170,7 @@ class Picture {
           rotateY(0);
           fill(borderColor);
           rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
-          scale(scalePercent);
+          scale(zoom);
           image(img, 0, 0); 
         }
       }
@@ -235,10 +235,10 @@ class Picture {
     velocity.y = yspeed;
   }
   
-  public void setScalePercent(float zoomFactor) {
-    scalePercent = zoomFactor;
-    scaledWidth = img.width * scalePercent;
-    scaledHeight = img.height * scalePercent;
+  public void setZoom(float zoomFactor) {
+    zoom = zoomFactor;
+    scaledWidth = img.width * zoom;
+    scaledHeight = img.height * zoom;
   }
    
   public void unPick() {
@@ -261,17 +261,18 @@ class Picture {
   }
   
   public void setState(final PictureState state) {
-    location.x = state.x;
-    location.y = state.y;
-    location.z = state.z;
-    scalePercent = state.scalePercent;
-    scaledWidth = state.w * state.scalePercent;
-    scaledHeight = state.h * state.scalePercent;
+    // total tiled display width / head node sketch window width    
+    float scaler = (float) process.getMWidth() / state.leaderWidth;
+        
+    location = PVector.mult(state.location, scaler);
+    zoom = state.zoom * scaler;
+    scaledWidth = state.dim[0] * scaler;
+    scaledHeight = state.dim[1] * scaler;
     theta = state.theta;
     imgDescription = state.imgDescription;
     showPicture = state.showPicture;
-    showText = state.showText;
-    borderColor = unhex(state.borderColor);    
+    showText = !showPicture;
+    borderColor = unhex(state.borderColor); 
   } 
     
   /***************/  
@@ -310,8 +311,8 @@ class Picture {
     return imgName; 
   }
   
-  public float getScalePercent() {
-    return scalePercent; 
+  public float getZoom() {
+    return zoom; 
   }
 
   public boolean isPicked() {
@@ -319,6 +320,7 @@ class Picture {
   }
   
   private PictureState getState() {
-    return new PictureState(id, location.x, location.y, location.z, img.width, img.height, scalePercent, theta, imgDescription, showPicture, showText, hex(borderColor)); 
+    float[] dim = { scaledWidth, scaledHeight };
+    return new PictureState(id, location, dim, zoom, theta, imgDescription, showPicture, hex(borderColor), (float) process.getMWidth()); 
   }
 }
