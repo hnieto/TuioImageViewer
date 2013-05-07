@@ -11,10 +11,11 @@ static class PictureState implements Serializable {
   final String imgDescription;
   final boolean showPicture;
   final boolean showText;
+  final int fontSize;
   final String borderColor;
   final float leaderWidth;
   
-  PictureState(final int _id, final PVector _location, final float[] _dim, final float _zoom, final float _theta, final String _imgDescription, final boolean _showPicture, final String _borderColor, final float _leaderWidth) {
+  PictureState(final int _id, final PVector _location, final float[] _dim, final float _zoom, final float _theta, final String _imgDescription, final boolean _showPicture, final int _fontSize, final String _borderColor, final float _leaderWidth) {
     id = _id;
     location = _location;
     dim = _dim;
@@ -23,6 +24,7 @@ static class PictureState implements Serializable {
     imgDescription = _imgDescription;
     showPicture = _showPicture;
     showText = !showPicture;
+    fontSize = _fontSize;
     borderColor = _borderColor;
     leaderWidth = _leaderWidth;
   }  

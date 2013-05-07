@@ -49,7 +49,7 @@ class Picture {
     
     currentScreenRes = sketchWidth * sketchHeight;
     fontSize = (int) map(currentScreenRes,MACBOOK_SCREEN_RES,STALLION_SCREEN_RES,14,128); // scale font size according to screen resolution   
-    
+
     timerStarted = false;
     picked = false;
     unavailable = false;
@@ -272,6 +272,7 @@ class Picture {
     imgDescription = state.imgDescription;
     showPicture = state.showPicture;
     showText = !showPicture;
+    fontSize = state.fontSize * (int)scaler;
     borderColor = unhex(state.borderColor); 
   } 
     
@@ -321,6 +322,6 @@ class Picture {
   
   private PictureState getState() {
     float[] dim = { scaledWidth, scaledHeight };
-    return new PictureState(id, location, dim, zoom, theta, imgDescription, showPicture, hex(borderColor), (float) process.getMWidth()); 
+    return new PictureState(id, location, dim, zoom, theta, imgDescription, showPicture, fontSize, hex(borderColor), (float) process.getMWidth()); 
   }
 }
