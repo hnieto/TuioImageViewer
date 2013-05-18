@@ -19,6 +19,7 @@ class Picture {
   private PVector location;  
   private PVector velocity;
   private PVector friction;
+  private float u; // coefficent of friction
   private float xOffset;
   private float yOffset;
   
@@ -29,8 +30,8 @@ class Picture {
   
   /* Description Text */
   private float currentScreenRes;
-  private float STALLION_SCREEN_RES = 3.2768e8;  // in megapixels
-  private float MACBOOK_SCREEN_RES = 1.296e6;    // in megapixels
+  private float LASSO_SCREEN_RES = 1.24416e7;  // in pixels
+  private float MACBOOK_SCREEN_RES = 1.296e6;    // in pixels
   private int fontSize;
 
   private boolean timerStarted;
@@ -48,7 +49,7 @@ class Picture {
     theta = 0.0;
     
     currentScreenRes = sketchWidth * sketchHeight;
-    fontSize = (int) map(currentScreenRes,MACBOOK_SCREEN_RES,STALLION_SCREEN_RES,14,128); // scale font size according to screen resolution   
+    fontSize = (int) map(currentScreenRes,MACBOOK_SCREEN_RES,LASSO_SCREEN_RES,20,70); // scale font size according to screen resolution  
 
     timerStarted = false;
     picked = false;
@@ -64,22 +65,25 @@ class Picture {
     scaledHeight = img.height * zoom;
     location = new PVector(random(sketchWidth-scaledWidth), random(sketchHeight-scaledHeight));
     velocity = new PVector(0,0);
+    friction = new PVector(0,0);
   }
   
   public void update() {
     // friction has the opposite direction of velocity
-    float normal = 1;
-    float u = 0.02; // coefficent of friction
-    float frictionMag = u*normal;
-    PVector friction = velocity.get();
+    friction = velocity.get();
     friction.normalize();
-    friction.mult(frictionMag);
-    // end friction     
-
-    location.add(velocity); 
-    velocity.sub(friction);
-    constrainToSketchWindow();
+    friction.mult(u);
+    // end friction  
     
+    velocity.sub(friction); 
+    location.add(velocity); 
+    
+    // only check boundaries if the picture is smaller than the sketch window
+    if(scaledWidth < sketchWidth && scaledHeight < sketchHeight) {
+      u = 0.02; 
+      constrainToSketchWindow(); 
+    } else u = 0.5; // decrease throwing ability by increasing friction
+                
     if (tuioCursor1 != null && !picked && !unavailable){
       // highlight with red border when hovering over pic for > 1s
       if(tuioCursor1.getScreenX(sketchWidth) > location.x-scaledWidth/2 && tuioCursor1.getScreenX(sketchWidth) < location.x+scaledWidth/2 && tuioCursor1.getScreenY(sketchHeight) > location.y-scaledHeight/2 && tuioCursor1.getScreenY(sketchHeight) < location.y+scaledHeight/2) {
@@ -113,7 +117,7 @@ class Picture {
       yOffset = (tuioCursor1.getScreenY(sketchHeight) - location.y);  
       
       velocity.x = tuioCursor1.getXSpeed();
-      velocity.y = tuioCursor1.getYSpeed();  
+      velocity.y = tuioCursor1.getYSpeed();   
     }   
     
     if(MPE_ON) process.broadcast(getState()); 
@@ -128,16 +132,34 @@ class Picture {
       if(showText) {
         translate(location.x, location.y, location.z); 
         
-        // flip animation will require 50 frames
-        if(theta < PI) { 
-          rotateY(theta);
-          theta += PI/50;
+        // begin flip animation
+        if(theta < PI/2) { 
           scale(zoom);
+          rotateY(theta);
           image(img, 0, 0);
+          theta += 0.01;
         } 
         
+        // picture is now out of sight
+        else if(theta > PI/2 && theta < PI) {
+          rotateY(theta);
+          pushStyle();
+            fill(0); // black infobox background
+            stroke(255);
+            rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
+            fill(255); // white text
+            textSize(fontSize);
+            if(imgDescription != null) text(imgDescription, 0, 0, scaledWidth-10, scaledHeight-10);
+            else {
+              println("Image Description String is Null");
+              text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth-10, scaledHeight-10);
+            }
+          popStyle();
+          theta += 0.01;
+        }
+        
         // flip animation complete
-        else { 
+        else {
           rotateY(0);
           pushStyle();
             fill(0); // black infobox background
@@ -146,23 +168,42 @@ class Picture {
             fill(255); // white text
             textSize(fontSize);
             if(imgDescription != null) text(imgDescription, 0, 0, scaledWidth-10, scaledHeight-10);
-            else println("Image Description String is Null");
+            else {
+              println("Image Description String is Null");
+              text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth-10, scaledHeight-10);
+            }
           popStyle();
+          theta = PI;
         }
       } 
       
       if(showPicture) {
         translate(location.x, location.y, location.z); 
         
-        // flip animation will require 50 frames
-        if(theta > 0) {
+        // reverse flip animation
+        if(theta > PI/2 && theta <= PI) {
           rotateY(theta);
-          theta -= PI/50;
           pushStyle();
             fill(0); // black infobox background
-            stroke(borderColor); 
+            stroke(255);
             rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
+            fill(255); // white text
+            textSize(fontSize);
+            if(imgDescription != null) text(imgDescription, 0, 0, scaledWidth-10, scaledHeight-10);
+            else {
+              println("Image Description String is Null");
+              text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth-10, scaledHeight-10);
+            }
           popStyle();
+          theta -= 0.01;
+        }
+        
+        // picture is now in sight
+        else if(theta > 0 && theta < PI/2) {
+          scale(zoom);
+          rotateY(theta);
+          image(img, 0, 0);
+          theta -= 0.01;
         } 
         
         // flip animation complete        
