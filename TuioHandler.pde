@@ -74,7 +74,7 @@ void addTuioCursor(TuioCursor tcur) {
   else if (tuioCursor3 == null) {
     tuioCursor3 = tcur;
     // deselect picture with 3 finger touch. 
-    for (int i=0; i<pictures.length; i++){
+    for (int i=0; i<pictures.length; i++){   
       pictures[i].unPick(); 
     }     
   }
@@ -89,11 +89,6 @@ void updateTuioCursor (TuioCursor tcur) {
         currDistance = getDistance(tuioCursor1, tuioCursor2);
         zoomFactor = prevZoomFactor*(currDistance/startDistance);
         pictures[i].setZoom(zoomFactor); // get picture's scale value in case user zooms
-        
-        // prevent multiple pictures from being selected
-        for (int j=0; j<pictures.length; j++) {
-          if(j != i) pictures[j].setUnavailable(); 
-        }
       }
     }
   } 
@@ -104,11 +99,6 @@ void updateTuioCursor (TuioCursor tcur) {
       if(pictures[i].isPicked()) {
         zoomFactor = pictures[i].getZoom();
         pictures[i].setXY(tuioCursor1.getScreenX(sketchWidth)-pictures[i].getxOffset(), tuioCursor1.getScreenY(sketchHeight)-pictures[i].getyOffset());
-        
-        // prevent multiple pictures from being selected
-        for (int j=0; j<pictures.length; j++) {
-          if(j != i) pictures[j].setUnavailable(); 
-        }
       }
     }
   } 

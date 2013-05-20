@@ -53,7 +53,7 @@ class Picture {
 
     timerStarted = false;
     picked = false;
-    unavailable = false;
+    unavailable = false; // true if another picture has already been selected. 
     showPicture = true;
     showText = false;
   }
@@ -86,7 +86,11 @@ class Picture {
                 
     if (tuioCursor1 != null && !picked && !unavailable){
       // highlight with red border when hovering over pic for > 1s
-      if(tuioCursor1.getScreenX(sketchWidth) > location.x-scaledWidth/2 && tuioCursor1.getScreenX(sketchWidth) < location.x+scaledWidth/2 && tuioCursor1.getScreenY(sketchHeight) > location.y-scaledHeight/2 && tuioCursor1.getScreenY(sketchHeight) < location.y+scaledHeight/2) {
+      if(tuioCursor1.getScreenX(sketchWidth) > location.x-scaledWidth/2 && 
+         tuioCursor1.getScreenX(sketchWidth) < location.x+scaledWidth/2 && 
+         tuioCursor1.getScreenY(sketchHeight) > location.y-scaledHeight/2 && 
+         tuioCursor1.getScreenY(sketchHeight) < location.y+scaledHeight/2) {
+           
         // start timer once mouse is over picture
         if(!timerStarted) {
           timerStarted = true;
@@ -137,7 +141,7 @@ class Picture {
           scale(zoom);
           rotateY(theta);
           image(img, 0, 0);
-          theta += 0.01;
+          theta += 0.05;
         } 
         
         // picture is now out of sight
@@ -155,7 +159,7 @@ class Picture {
               text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth-10, scaledHeight-10);
             }
           popStyle();
-          theta += 0.01;
+          theta += 0.05;
         }
         
         // flip animation complete
@@ -195,7 +199,7 @@ class Picture {
               text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth-10, scaledHeight-10);
             }
           popStyle();
-          theta -= 0.01;
+          theta -= 0.05;
         }
         
         // picture is now in sight
@@ -203,7 +207,7 @@ class Picture {
           scale(zoom);
           rotateY(theta);
           image(img, 0, 0);
-          theta -= 0.01;
+          theta -= 0.05;
         } 
         
         // flip animation complete        

@@ -28,67 +28,67 @@ boolean FULLSCREEN = false;
 boolean showCursor = true;
 
 void setup() {
-  
-  if(MPE_ON){
+
+  if (MPE_ON) {
     FULLSCREEN = false;
     configPath = dataPath + "MPE/" + "configuration.xml";
-    
+
     // create a new configuration object and specify the path to the configuration file
     tileConfig = new Configuration(configPath, this);
-  
+
     // set the size of the sketch based on the configuration file
     size(tileConfig.getLWidth(), tileConfig.getLHeight(), OPENGL);
-        
+
     // create a new process
     process = new Process(tileConfig);
-    
+
     sketchWidth  = process.getMWidth();
     sketchHeight = process.getMHeight(); 
-                
+
     randomSeed(0);
-  } else {
-    if(FULLSCREEN) size(displayWidth,displayHeight,OPENGL); // run from "Sketch -> Present"
+  } 
+  else {
+    if (FULLSCREEN) size(displayWidth, displayHeight, OPENGL); // run from "Sketch -> Present"
     else size(1000, 700, OPENGL);
     sketchWidth = width;
     sketchHeight = height;
   }
-  
+
   getPictures();
   loadPictures();
   getPictureDescriptions();
-  
+
   initTUIO();
-  finger = new Cursor(sketchWidth/64, color(255,0,0));
-  
+  finger = new Cursor(sketchWidth/64, color(255, 0, 0));
+
   // start the MPE process
-  if(MPE_ON) process.start();
+  if (MPE_ON) process.start();
 }
 
 void draw() {
   background(0);
 
-  if(MPE_ON) {
+  if (MPE_ON) {
     // synchronize render nodes with head node 
-    if(process.messageReceived()) {
-      
+    if (process.messageReceived()) {
+
       // read serialized object
       Object obj = process.getMessage();
-      
-      if(obj instanceof PictureState) {
+
+      if (obj instanceof PictureState) {
         // cast object to a PictureState
         PictureState picState = (PictureState) obj;
         pictures[picState.id].setState(picState);
       } 
-      
-      else if(obj instanceof CursorState) { 
+
+      else if (obj instanceof CursorState) { 
         // cast object to a CursorState
         CursorState curState = (CursorState) obj; 
         finger.setState(curState);
-      }      
-    } 
+      }
+    }
   }
-  
-  moveSelectedPictureForward();
+
   showPictures();
   showCursor();
 }
@@ -100,13 +100,13 @@ void getPictures() {
   if ((picture_names != null)&&(picture_names.length > 0)) {
     println ("Number of pictures in data path: " + picture_names.length);
     pictures = new Picture[picture_names.length];
-    
+
     println ("\n" + "Creating picture objects .....");
-    for(int i=0; i<picture_names.length; i++) {
+    for (int i=0; i<picture_names.length; i++) {
       pictures[i] = new Picture(dataPath + "Images/", picture_names[i], i);
     }
   } 
-  
+
   else {
     println ("No compatible images found in data path.");
     exit();
@@ -118,33 +118,19 @@ void loadPictures() {
   for (int i=0; i<picture_names.length; i++) {
     pictures[i].load();
     println (picture_names[i] + " loaded successfully.");
-  } 
+  }
 }
 
 void getPictureDescriptions() {
   println("\n" + "Reading XML file for picture descriptions .....");
   XML xml = loadXML(dataPath + xmlFile); // Load an XML document
   XML[] children = xml.getChildren("picture");
-  
-  for(int i=0; i<children.length; i++) {
+
+  for (int i=0; i<children.length; i++) {
     String picture_name = children[i].getString("name");
     String description = children[i].getContent();
-    for(int j=0; j<pictures.length; j++) {
-      if(picture_name.equals(pictures[j].getName())) pictures[j].setDescription(description); 
-    }
-  } 
-}
-
-void moveSelectedPictureForward() {
-  // last element in array is always on top since it is drawn last
-  for (int i=0; i<pictures.length; i++) {
-    if(pictures[i].isPicked()){
-      // no need to reorder pictures array if selected picture is already last element
-      if(i !=  pictures.length-1){
-        Picture temp = pictures[pictures.length-1];
-        pictures[pictures.length-1] = pictures[i];
-        pictures[i] = temp;         
-      }
+    for (int j=0; j<pictures.length; j++) {
+      if (picture_name.equals(pictures[j].getName())) pictures[j].setDescription(description);
     }
   }
 }
@@ -153,11 +139,18 @@ void showPictures() {
   for (int i=0; i<pictures.length; i++) {
     pictures[i].update();
     pictures[i].display();
-  } 
+
+    if (pictures[i].isPicked()) {
+      // prevent multiple pictures from being selected
+      for (int j=0; j<pictures.length; j++) {
+        if (j != i) pictures[j].setUnavailable();
+      }
+    }
+  }
 }
 
 void showCursor() {
-  if(showCursor && tuioCursor1 != null){
+  if (showCursor && tuioCursor1 != null) {
     finger.update(tuioCursor1.getScreenX(sketchWidth), tuioCursor1.getScreenY(sketchHeight));
     finger.display();
   }
@@ -177,3 +170,4 @@ String[] listFileNames(String dir) {
     return null;
   }
 }
+
