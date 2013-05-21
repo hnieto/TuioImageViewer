@@ -30,7 +30,7 @@ class Picture {
   
   /* Description Text */
   private float currentScreenRes;
-  private float LASSO_SCREEN_RES = 1.24416e7;  // in pixels
+  private float SMALL_SKETCH_RES = 40;  // in pixels
   private float MACBOOK_SCREEN_RES = 1.296e6;    // in pixels
   private int fontSize;
 
@@ -49,7 +49,8 @@ class Picture {
     theta = 0.0;
     
     currentScreenRes = sketchWidth * sketchHeight;
-    fontSize = (int) map(currentScreenRes,MACBOOK_SCREEN_RES,LASSO_SCREEN_RES,20,40); // scale font size according to screen resolution  
+    fontSize = (int) map(currentScreenRes,SMALL_SKETCH_RES, MACBOOK_SCREEN_RES,3,14); // scale font size according to screen resolution  
+    println(fontSize);
 
     timerStarted = false;
     picked = false;
