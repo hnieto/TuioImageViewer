@@ -3,6 +3,7 @@ class Picture {
   private String imgPath;
   private String imgName;
   private String imgDescription;
+  private boolean showPicture;
   private int id;
 
   /* Size */
@@ -22,12 +23,7 @@ class Picture {
   private float u; // coefficent of friction
   private float xOffset;
   private float yOffset;
-  
-  /* Y-Axis Rotation */
-  private float theta;
-  private boolean showPicture;
-  private boolean showText;
-  
+   
   /* Description Text */
   private float currentScreenRes;
   private float SMALL_SKETCH_RES = 40;  // in pixels
@@ -46,7 +42,6 @@ class Picture {
     expectedPictureWidth = sketchWidth/8;
     borderThickness = 5;
     borderColor = color(255); // white border
-    theta = 0.0;
     
     currentScreenRes = sketchWidth * sketchHeight;
     fontSize = (int) map(currentScreenRes,SMALL_SKETCH_RES, MACBOOK_SCREEN_RES,3,14); // scale font size according to screen resolution  
@@ -55,7 +50,6 @@ class Picture {
     picked = false;
     unavailable = false; // true if another picture has already been selected. 
     showPicture = true;
-    showText = false;
   }
 
   public void load() {
@@ -133,31 +127,14 @@ class Picture {
     textAlign(CENTER);
     
     pushMatrix();
-      if(showText) {
+      if(showPicture) {
         translate(location.x, location.y, location.z); 
-        
-        // begin flip animation
-        if(theta < PI/2) { 
-          scale(zoom);
-          rotateY(theta);
-          image(img, 0, 0);
-          theta += 0.05;
-        } 
-        
-        // picture is now out of sight
-        else if(theta > PI/2 && theta < PI) {
-          rotateY(theta);
-          pushStyle();
-            fill(0); // black infobox background
-            stroke(255);
-            rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
-          popStyle();
-          theta += 0.05;
-        }
-        
-        // flip animation complete
-        else {
-          rotateY(0);
+        fill(borderColor);
+        rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
+        scale(zoom);
+        image(img, 0, 0); 
+      } else {
+          translate(location.x, location.y, location.z); 
           pushStyle();
             fill(0); // black infobox background
             stroke(borderColor);
@@ -170,42 +147,8 @@ class Picture {
               text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth-10, scaledHeight-10);
             }
           popStyle();
-          theta = PI;
-        }
       } 
-      
-      if(showPicture) {
-        translate(location.x, location.y, location.z); 
-        
-        // reverse flip animation
-        if(theta > PI/2 && theta <= PI) {
-          rotateY(theta);
-          pushStyle();
-            fill(0); // black infobox background
-            stroke(255);
-            rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
-          popStyle();
-          theta -= 0.05;
-        }
-        
-        // picture is now in sight
-        else if(theta > 0 && theta < PI/2) {
-          scale(zoom);
-          rotateY(theta);
-          image(img, 0, 0);
-          theta -= 0.05;
-        } 
-        
-        // flip animation complete        
-        else {
-          rotateY(0);
-          fill(borderColor);
-          rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
-          scale(zoom);
-          image(img, 0, 0); 
-        }
-      }
-    popMatrix(); 
+    popMatrix();
   }
   
   private void constrainToSketchWindow() {
@@ -287,7 +230,6 @@ class Picture {
   }
   
   public void flip() {
-    showText = !showText; 
     showPicture = !showPicture;
   }
   
@@ -299,10 +241,8 @@ class Picture {
     zoom = state.zoom * scaler;
     scaledWidth = state.dim[0] * scaler;
     scaledHeight = state.dim[1] * scaler;
-    theta = state.theta;
     imgDescription = state.imgDescription;
     showPicture = state.showPicture;
-    showText = !showPicture;
     fontSize = state.fontSize * (int)scaler;
     borderColor = unhex(state.borderColor); 
   } 
@@ -353,6 +293,6 @@ class Picture {
   
   private PictureState getState() {
     float[] dim = { scaledWidth, scaledHeight };
-    return new PictureState(id, location, dim, zoom, theta, imgDescription, showPicture, fontSize, hex(borderColor), (float) process.getMWidth()); 
+    return new PictureState(id, location, dim, zoom, imgDescription, showPicture, fontSize, hex(borderColor), (float) process.getMWidth()); 
   }
 }

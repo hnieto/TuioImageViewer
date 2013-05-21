@@ -14,7 +14,7 @@ Configuration tileConfig;
 String configPath;
 
 // Set to TRUE if using MPE + Tiled Display
-boolean MPE_ON = true;
+boolean MPE_ON = false;
 
 /******************************/
 

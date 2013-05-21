@@ -1,5 +1,6 @@
 <configuration>
-    <dimensions numTilesWidth="2" numTilesHeight="2" screenWidth="350" screenHeight="350" mullionWidth="0" mullionHeight="0" debug="0"/>
+    <dimensions numTilesWidth="2" numTilesHeight="2" screenWidth="350" screenHeight="350" mullionWidth="0" mullionHeight="0"/>
+		<config debug="0" processingPath="/Applications/Processing.app"/>
     <head host="localhost" port="9002" display=":0" rank="0">
         <screen width="200" height="200"/>
     </head>
