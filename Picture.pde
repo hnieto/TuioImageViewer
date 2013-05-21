@@ -141,10 +141,10 @@ class Picture {
             rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
             fill(255); // white text
             textSize(fontSize);
-            if(imgDescription != null) text(imgDescription, 0, 0, scaledWidth-10, scaledHeight-10);
+            if(imgDescription != null) text(imgDescription, 0, 0, scaledWidth/2, scaledHeight/2);
             else {
               println("Image Description String is Null");
-              text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth-10, scaledHeight-10);
+              text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth/2, scaledHeight/2);
             }
           popStyle();
       } 
