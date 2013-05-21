@@ -50,7 +50,6 @@ class Picture {
     
     currentScreenRes = sketchWidth * sketchHeight;
     fontSize = (int) map(currentScreenRes,SMALL_SKETCH_RES, MACBOOK_SCREEN_RES,3,14); // scale font size according to screen resolution  
-    println(fontSize);
 
     timerStarted = false;
     picked = false;
