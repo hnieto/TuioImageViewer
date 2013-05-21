@@ -63,8 +63,8 @@ for elemP in tree.findall('.//process'):
 # iterate over hostlist, launching processes
 for idx,host in enumerate(hostList):
 	display = displayList[idx]
-	command = 'ssh ' + host + ' \"export DISPLAY=' + display + ' export RANK=' + str(idx) + ';sh ' + sys.argv[1] + '\" &'
-#	command = 'ssh ' + host + ' \"export PATH=/share/apps/jdk1.7.0_17/bin:$PATH ' + 'export DISPLAY=' + display + ' export RANK=' + str(idx) + ';sh ' + sys.argv[1] + '\" &'
+#	command = 'ssh ' + host + ' \"export DISPLAY=' + display + ' export RANK=' + str(idx) + ';sh ' + sys.argv[1] + '\" &'
+	command = 'ssh ' + host + ' \"export PATH=/share/apps/jdk1.7.0_17/bin:$PATH ' + 'export DISPLAY=' + display + ' export RANK=' + str(idx) + ';sh ' + sys.argv[1] + '\" &'
 	print "exec: " + command
 	subprocess.Popen(shlex.split(command))
 
