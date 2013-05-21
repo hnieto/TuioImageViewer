@@ -14,7 +14,7 @@ Configuration tileConfig;
 String configPath;
 
 // Set to TRUE if using MPE + Tiled Display
-boolean MPE_ON = false;
+boolean MPE_ON = true;
 
 /******************************/
 
@@ -89,6 +89,7 @@ void draw() {
     }
   }
 
+  moveSelectedPictureForward();
   showPictures();
   showCursor();
 }
@@ -110,7 +111,7 @@ void getPictures() {
   else {
     println ("No compatible images found in data path.");
     exit();
-  }
+  }  
 }
 
 void loadPictures() {
@@ -135,7 +136,21 @@ void getPictureDescriptions() {
   }
 }
 
-void showPictures() {
+void moveSelectedPictureForward() {
+  // last element in array is always on top since it is drawn last
+  for (int i=0; i<pictures.length; i++) {
+    if(pictures[i].isPicked()){
+      // no need to reorder pictures array if selected picture is already last element
+      if(i !=  pictures.length-1){
+        Picture temp = pictures[pictures.length-1];
+        pictures[pictures.length-1] = pictures[i];
+        pictures[i] = temp;         
+      }
+    }
+  }
+}
+
+void showPictures() {  
   for (int i=0; i<pictures.length; i++) {
     pictures[i].update();
     pictures[i].display();

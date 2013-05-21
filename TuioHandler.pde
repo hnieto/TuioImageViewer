@@ -75,7 +75,7 @@ void addTuioCursor(TuioCursor tcur) {
     tuioCursor3 = tcur;
     // deselect picture with 3 finger touch. 
     for (int i=0; i<pictures.length; i++){   
-      pictures[i].unPick(); 
+      pictures[i].unPick();
     }     
   }
 }

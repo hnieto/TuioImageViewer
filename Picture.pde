@@ -49,7 +49,7 @@ class Picture {
     theta = 0.0;
     
     currentScreenRes = sketchWidth * sketchHeight;
-    fontSize = (int) map(currentScreenRes,MACBOOK_SCREEN_RES,LASSO_SCREEN_RES,20,70); // scale font size according to screen resolution  
+    fontSize = (int) map(currentScreenRes,MACBOOK_SCREEN_RES,LASSO_SCREEN_RES,20,40); // scale font size according to screen resolution  
 
     timerStarted = false;
     picked = false;
@@ -122,9 +122,9 @@ class Picture {
       
       velocity.x = tuioCursor1.getXSpeed();
       velocity.y = tuioCursor1.getYSpeed();   
-    }   
-    
-    if(MPE_ON) process.broadcast(getState()); 
+    }
+
+    if(MPE_ON) process.broadcast(getState());    
   }
   
   public void display() {  
@@ -151,13 +151,6 @@ class Picture {
             fill(0); // black infobox background
             stroke(255);
             rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
-            fill(255); // white text
-            textSize(fontSize);
-            if(imgDescription != null) text(imgDescription, 0, 0, scaledWidth-10, scaledHeight-10);
-            else {
-              println("Image Description String is Null");
-              text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth-10, scaledHeight-10);
-            }
           popStyle();
           theta += 0.05;
         }
@@ -191,13 +184,6 @@ class Picture {
             fill(0); // black infobox background
             stroke(255);
             rect(0, 0, scaledWidth+borderThickness, scaledHeight+borderThickness);
-            fill(255); // white text
-            textSize(fontSize);
-            if(imgDescription != null) text(imgDescription, 0, 0, scaledWidth-10, scaledHeight-10);
-            else {
-              println("Image Description String is Null");
-              text("Description is not available.\n\nVerify that this image's description has been included in picture_descriptions.xml", 0, 0, scaledWidth-10, scaledHeight-10);
-            }
           popStyle();
           theta -= 0.05;
         }
