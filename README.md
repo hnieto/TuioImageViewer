@@ -57,8 +57,3 @@ A maximum of 3 fingers will be detected by the program. Only the first finger wi
 * [Processing](http://processing.org/) 
 * [Processing TUIO library](http://www.tuio.org/?processing)
 * [MassivePixelEnvironment](https://github.com/TACC/MassivePixelEnvironment)
-
-
-## To Do
-
-* 2 finger picture rotation around z-axis  
