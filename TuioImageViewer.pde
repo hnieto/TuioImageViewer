@@ -18,8 +18,6 @@ boolean MPE_ON = true;
 
 /******************************/
 
-String dataPath = "/Users/eddie/Programming/Processing/TuioImageViewer/data/";
-String xmlFile = "picture_descriptions.xml";
 String[] picture_names; 
 Picture[] pictures;
 Cursor finger;
@@ -31,10 +29,9 @@ void setup() {
 
   if (MPE_ON) {
     FULLSCREEN = false;
-    configPath = dataPath + "MPE/" + "configuration.xml";
 
     // create a new configuration object and specify the path to the configuration file
-    tileConfig = new Configuration(configPath, this);
+    tileConfig = new Configuration(dataPath("MPE/configuration.xml"), this);
 
     // set the size of the sketch based on the configuration file
     size(tileConfig.getLWidth(), tileConfig.getLHeight(), OPENGL);
@@ -95,7 +92,7 @@ void draw() {
 }
 
 void getPictures() {
-  picture_names = listFileNames(dataPath + "Images/");  // get image names from folder
+  picture_names = listFileNames(dataPath("Images/"));  // get image names from folder
 
   //continue only if some image files found in directory
   if ((picture_names != null)&&(picture_names.length > 0)) {
@@ -104,7 +101,7 @@ void getPictures() {
 
     println ("\n" + "Creating picture objects .....");
     for (int i=0; i<picture_names.length; i++) {
-      pictures[i] = new Picture(dataPath + "Images/", picture_names[i], i);
+      pictures[i] = new Picture(picture_names[i], i);
     }
   } 
 
@@ -124,7 +121,7 @@ void loadPictures() {
 
 void getPictureDescriptions() {
   println("\n" + "Reading XML file for picture descriptions .....");
-  XML xml = loadXML(dataPath + xmlFile); // Load an XML document
+  XML xml = loadXML(dataPath("picture_descriptions.xml")); // Load an XML document
   XML[] children = xml.getChildren("picture");
 
   for (int i=0; i<children.length; i++) {

@@ -34,8 +34,7 @@ class Picture {
   private int hoverStartTime;
   private boolean picked;
 
-  Picture(String _imgPath, String _imgName, int _id) {
-    imgPath = _imgPath;
+  Picture(String _imgName, int _id) {
     imgName = _imgName;
     id = _id;
     expectedPictureWidth = sketchWidth/8;
@@ -51,7 +50,7 @@ class Picture {
   }
 
   public void load() {
-    img = loadImage(imgPath + imgName);
+    img = loadImage(dataPath("Images/" + imgName));
     zoom = expectedPictureWidth/img.width;
     scaledWidth = img.width * zoom;
     scaledHeight = img.height * zoom;
