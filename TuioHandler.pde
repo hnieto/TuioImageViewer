@@ -1,10 +1,13 @@
 // we need to import the TUIO library and declare a TuioProcessing client variable
 import TUIO.*;
+import java.util.*;
+
 TuioProcessing tuioClient;
 int port = 3333;
 TuioCursor tuioCursor1 = null;
 TuioCursor tuioCursor2 = null;
 TuioCursor tuioCursor3 = null;
+Vector cursorPath;
 
 float desiredImageWidth = sketchWidth/8;
 float startDistance, currDistance;
@@ -12,6 +15,8 @@ float prevZoomFactor, zoomFactor;
 
 float prevTapTimeStamp;
 float tapTimeStamp = 0;
+
+boolean staticCursor = false;
 
 // distance between finger and selected picture's center
 int dx, dy;
@@ -94,6 +99,15 @@ void updateTuioCursor (TuioCursor tcur) {
   } 
   
   else if (tuioCursor1 != null) {        
+    cursorPath = tuioCursor1.getPath();
+   
+    // check if cursor is moving or not
+    if(cursorPath.size() > 0) {
+      TuioPoint previous = (TuioPoint)cursorPath.elementAt(cursorPath.size()-2);
+      if (previous.getScreenX(width) == tuioCursor1.getScreenX(width) && previous.getScreenY(height) == tuioCursor1.getScreenY(height)) staticCursor = true;
+      else staticCursor = false;
+    }
+
     // move selected picture to current cursor position
     for (int i=0; i<pictures.length; i++) {
       if(pictures[i].isPicked()) {

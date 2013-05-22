@@ -33,7 +33,6 @@ class Picture {
   private boolean timerStarted;
   private int hoverStartTime;
   private boolean picked;
-  private boolean unavailable; // used to prevent multiple pictures from being selected
 
   Picture(String _imgPath, String _imgName, int _id) {
     imgPath = _imgPath;
@@ -48,7 +47,6 @@ class Picture {
 
     timerStarted = false;
     picked = false;
-    unavailable = false; // true if another picture has already been selected. 
     showPicture = true;
   }
 
@@ -78,12 +76,13 @@ class Picture {
       constrainToSketchWindow(); 
     } else u = 0.5; // decrease throwing ability by increasing friction
                 
-    if (tuioCursor1 != null && !picked && !unavailable){
-      // highlight with red border when hovering over pic for > 1s
+    if (tuioCursor1 != null && !picked){
+      // highlight with red border when hovering over pic for > 1s without moving the cursor
+      // prevents from accidently selecting image if dragging cursor over it for > 1s
       if(tuioCursor1.getScreenX(sketchWidth) > location.x-scaledWidth/2 && 
          tuioCursor1.getScreenX(sketchWidth) < location.x+scaledWidth/2 && 
          tuioCursor1.getScreenY(sketchHeight) > location.y-scaledHeight/2 && 
-         tuioCursor1.getScreenY(sketchHeight) < location.y+scaledHeight/2) {
+         tuioCursor1.getScreenY(sketchHeight) < location.y+scaledHeight/2 && staticCursor){
            
         // start timer once mouse is over picture
         if(!timerStarted) {
@@ -108,7 +107,7 @@ class Picture {
     }
     
     // no need to check for hovering if pictures has already been selected
-    else if (tuioCursor1 != null && picked && !unavailable){
+    else if (tuioCursor1 != null && picked){
       
       // must keep updated as image is moved
       xOffset = (tuioCursor1.getScreenX(sketchWidth) - location.x);
@@ -117,8 +116,6 @@ class Picture {
       velocity.x = tuioCursor1.getXSpeed();
       velocity.y = tuioCursor1.getYSpeed();   
     }
-
-    if(MPE_ON) process.broadcast(getState());    
   }
   
   public void display() {  
@@ -219,14 +216,8 @@ class Picture {
     location.z = 0;
     picked = false;
     showCursor = true;
-    unavailable = false;
     timerStarted = false;
     borderColor = color(255); // revert to white border
-  }
-  
-  // true if any other image has already been selected
-  public void setUnavailable() { 
-    unavailable = true; 
   }
   
   public void flip() {

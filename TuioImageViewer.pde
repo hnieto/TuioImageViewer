@@ -14,7 +14,7 @@ Configuration tileConfig;
 String configPath;
 
 // Set to TRUE if using MPE + Tiled Display
-boolean MPE_ON = false;
+boolean MPE_ON = true;
 
 /******************************/
 
@@ -111,7 +111,7 @@ void getPictures() {
   else {
     println ("No compatible images found in data path.");
     exit();
-  }  
+  }
 }
 
 void loadPictures() {
@@ -139,29 +139,30 @@ void getPictureDescriptions() {
 void moveSelectedPictureForward() {
   // last element in array is always on top since it is drawn last
   for (int i=0; i<pictures.length; i++) {
-    if(pictures[i].isPicked()){
+    if (pictures[i].isPicked()) {
       // no need to reorder pictures array if selected picture is already last element
-      if(i !=  pictures.length-1){
+      if (i !=  pictures.length-1) {
         Picture temp = pictures[pictures.length-1];
         pictures[pictures.length-1] = pictures[i];
-        pictures[i] = temp;         
+        pictures[i] = temp;
       }
     }
   }
 }
 
-void showPictures() {  
+void showPictures() {   
   for (int i=0; i<pictures.length; i++) {
-    pictures[i].update();
-    pictures[i].display();
-
-    if (pictures[i].isPicked()) {
-      // prevent multiple pictures from being selected
-      for (int j=0; j<pictures.length; j++) {
-        if (j != i) pictures[j].setUnavailable();
-      }
-    }
+    pictures[i].display(); 
   }
+
+  for (int i=pictures.length-1; i>=0; i--) {
+    pictures[i].update();    
+
+    // prevent multiple pictures from being selected
+    if (pictures[i].isPicked()) break;
+  }
+
+  if(MPE_ON) process.broadcast(pictures[pictures.length-1].getState()); 
 }
 
 void showCursor() {
