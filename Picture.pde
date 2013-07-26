@@ -33,14 +33,14 @@ class Picture {
   private boolean timerStarted;
   private int hoverStartTime;
   private boolean picked;
-
+  
   Picture(String _imgName, int _id) {
     imgName = _imgName;
     id = _id;
     expectedPictureWidth = sketchWidth/8;
     borderThickness = 5;
     borderColor = color(255); // white border
-    
+   
     currentScreenRes = sketchWidth * sketchHeight;
     fontSize = (int) map(currentScreenRes,SMALL_SKETCH_RES, MACBOOK_SCREEN_RES,3,14); // scale font size according to screen resolution  
 
@@ -50,13 +50,14 @@ class Picture {
   }
 
   public void load() {
-    img = loadImage(dataPath("Images/" + imgName));
+    if(split(imgName, ':')[0].equals("http")) img = loadImage(imgName);
+    else img = loadImage(dataPath("Images/" + imgName));
     zoom = expectedPictureWidth/img.width;
     scaledWidth = img.width * zoom;
     scaledHeight = img.height * zoom;
     location = new PVector(random(sketchWidth-scaledWidth), random(sketchHeight-scaledHeight));
     velocity = new PVector(0,0);
-    friction = new PVector(0,0);
+    friction = new PVector(0,0); 
   }
   
   public void update() {

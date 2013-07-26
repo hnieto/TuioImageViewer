@@ -60,13 +60,13 @@ boolean doubleTapped(TuioCursor finger) {
 void addTuioCursor(TuioCursor tcur) { 
   if (tuioCursor1 == null) {
     tuioCursor1 = tcur;    
-    for(int i=0; i<pictures.length; i++) {
-      if(pictures[i].isPicked()) {
+    for(int i=0; i<pictures.size(); i++) {
+      if(pictures.get(i).isPicked()) {
         // update offsets cursor #1 is added
-        pictures[i].setxOffset(tuioCursor1.getScreenX(sketchWidth) - pictures[i].getX());
-        pictures[i].setyOffset(tuioCursor1.getScreenY(sketchHeight) - pictures[i].getY());
+        pictures.get(i).setxOffset(tuioCursor1.getScreenX(sketchWidth) - pictures.get(i).getX());
+        pictures.get(i).setyOffset(tuioCursor1.getScreenY(sketchHeight) - pictures.get(i).getY());
         
-        if(doubleTapped(tuioCursor1)) pictures[i].flip();
+        if(doubleTapped(tuioCursor1)) pictures.get(i).flip();
       } 
     }
   } 
@@ -79,8 +79,8 @@ void addTuioCursor(TuioCursor tcur) {
   else if (tuioCursor3 == null) {
     tuioCursor3 = tcur;
     // deselect picture with 3 finger touch. 
-    for (int i=0; i<pictures.length; i++){   
-      pictures[i].unPick();
+    for (int i=0; i<pictures.size(); i++){   
+      pictures.get(i).unPick();
     }     
   }
 }
@@ -88,12 +88,12 @@ void addTuioCursor(TuioCursor tcur) {
 // called when a cursor is moved
 void updateTuioCursor (TuioCursor tcur) { 
   if (tuioCursor1 != null && tuioCursor2 != null) {    
-    for (int i=0; i<pictures.length; i++) {
-      if(pictures[i].isPicked()) {
+    for (int i=0; i<pictures.size(); i++) {
+      if(pictures.get(i).isPicked()) {
         // zoom
         currDistance = getDistance(tuioCursor1, tuioCursor2);
         zoomFactor = prevZoomFactor*(currDistance/startDistance);
-        pictures[i].setZoom(zoomFactor); // get picture's scale value in case user zooms
+        pictures.get(i).setZoom(zoomFactor); // get picture's scale value in case user zooms
       }
     }
   } 
@@ -109,10 +109,10 @@ void updateTuioCursor (TuioCursor tcur) {
     }
 
     // move selected picture to current cursor position
-    for (int i=0; i<pictures.length; i++) {
-      if(pictures[i].isPicked()) {
-        zoomFactor = pictures[i].getZoom();
-        pictures[i].setXY(tuioCursor1.getScreenX(sketchWidth)-pictures[i].getxOffset(), tuioCursor1.getScreenY(sketchHeight)-pictures[i].getyOffset());
+    for (int i=0; i<pictures.size(); i++) {
+      if(pictures.get(i).isPicked()) {
+        zoomFactor = pictures.get(i).getZoom();
+        pictures.get(i).setXY(tuioCursor1.getScreenX(sketchWidth)-pictures.get(i).getxOffset(), tuioCursor1.getScreenY(sketchHeight)-pictures.get(i).getyOffset());
       }
     }
   } 
@@ -144,10 +144,10 @@ void removeTuioCursor(TuioCursor tcur) {
       tuioCursor2 = null; 
       
       // update offsets due to cursor exchange
-      for(int i=0; i<pictures.length; i++) {
-        if(pictures[i].isPicked()) {
-          pictures[i].setxOffset(tuioCursor1.getScreenX(sketchWidth) - pictures[i].getX());
-          pictures[i].setyOffset(tuioCursor1.getScreenY(sketchHeight) - pictures[i].getY());
+      for(int i=0; i<pictures.size(); i++) {
+        if(pictures.get(i).isPicked()) {
+          pictures.get(i).setxOffset(tuioCursor1.getScreenX(sketchWidth) - pictures.get(i).getX());
+          pictures.get(i).setyOffset(tuioCursor1.getScreenY(sketchHeight) - pictures.get(i).getY());
         } 
       }
     }    
